@@ -1,4 +1,9 @@
 {
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  }
+}
+{
   "name": "workspace",
   "version": "0.0.0",
   "license": "MIT",
