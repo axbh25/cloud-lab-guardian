@@ -1,0 +1,21 @@
+version: 1
+applications:
+  - appRoot: artifacts/cloud-lab-guardian
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - corepack enable
+            - corepack pnpm install --frozen-lockfile
+        build:
+          commands:
+            - BASE_PATH=/ corepack pnpm --filter @workspace/cloud-lab-guardian build
+      artifacts:
+        baseDirectory: artifacts/cloud-lab-guardian/dist
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+          - artifacts/cloud-lab-guardian/node_modules/**/*
+          - .pnpm-store/**/*
