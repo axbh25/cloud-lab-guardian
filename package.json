@@ -1,9 +1,4 @@
 {
-  "pnpm": {
-    "onlyBuiltDependencies": ["esbuild"]
-  }
-}
-{
   "name": "workspace",
   "version": "0.0.0",
   "license": "MIT",
@@ -19,5 +14,10 @@
   "devDependencies": {
     "prettier": "^3.9.5",
     "typescript": "~5.9.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }
