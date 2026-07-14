@@ -211,21 +211,20 @@ describe('Prompt: "Build a Lambda Function URL API"', () => {
     expect(plan.detectedServices.some((s) => s.name === 'Lambda')).toBe(true);
   });
 
-  it('includes Lambda Function URL setup step (no API Gateway required)', () => {
-    const stepTitles = plan.steps.map((s) => s.title.toLowerCase());
-    const hasFunctionUrl = stepTitles.some((t) => t.includes('function url'));
-    // Either a dedicated Function URL step or API Gateway must be present
-    const hasApiGateway = plan.detectedServices.some((s) => s.name === 'API Gateway');
-    expect(hasFunctionUrl || hasApiGateway).toBe(true);
+  it('does NOT detect API Gateway (user asked for Function URL, not API Gateway)', () => {
+    // Regression: "api" in "Function URL API" must not trigger API Gateway detection
+    expect(plan.detectedServices.some((s) => s.name === 'API Gateway')).toBe(false);
   });
 
-  it('cleanup does not include API Gateway commands when API Gateway not detected', () => {
-    if (!plan.detectedServices.some((s) => s.name === 'API Gateway')) {
-      const cmds = plan.cleanup.commands.join('\n');
-      expect(cmds).not.toMatch(/apigatewayv2 delete-api/);
-      // Should have Function URL cleanup instead
-      expect(cmds).toMatch(/delete-function-url-config/);
-    }
+  it('includes a Lambda Function URL setup step', () => {
+    const stepTitles = plan.steps.map((s) => s.title.toLowerCase());
+    expect(stepTitles.some((t) => t.includes('function url'))).toBe(true);
+  });
+
+  it('cleanup includes Lambda Function URL teardown, not API Gateway teardown', () => {
+    const cmds = plan.cleanup.commands.join('\n');
+    expect(cmds).not.toMatch(/apigatewayv2 delete-api/);
+    expect(cmds).toMatch(/delete-function-url-config/);
   });
 
   it('step commands include --function-name and --region flags', () => {

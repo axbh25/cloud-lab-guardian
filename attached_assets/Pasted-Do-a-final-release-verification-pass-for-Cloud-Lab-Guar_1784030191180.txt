@@ -1,0 +1,79 @@
+Do a final release verification pass for Cloud Lab Guardian v0.1.0.
+
+Do not add new features.
+Do not redesign the UI.
+Do not rewrite the whole app.
+Do not add paid APIs.
+Do not add Bedrock integration.
+
+Goal:
+Verify that the previous hardening rewrite actually works in the running app, tests, README export, and generated output.
+
+Tasks:
+
+1. Run the full project checks:
+   - npm test
+   - npm run build
+   - TypeScript typecheck if available
+   - lint if available
+
+2. Generate plans for these exact prompts in the running app logic:
+   - “Create a beginner AWS AI project using S3 and Lambda.”
+   - “Build a serverless image uploader.”
+   - “Build an app with EC2, RDS, NAT Gateway, and public S3.”
+   - “Create a Bedrock chatbot with a $0 budget.”
+   - “Build a Lambda Function URL API.”
+
+3. For each generated plan, inspect:
+   - Overview/service cards
+   - Architecture
+   - Security warnings
+   - Cost analysis
+   - Steps
+   - Cleanup
+   - Exported README.md content
+
+4. Confirm these safety requirements:
+   - Every plan warns against public S3.
+   - Every plan warns against AdministratorAccess.
+   - Every plan warns against hardcoded AWS keys.
+   - $0 budget plans do not treat Bedrock as required.
+   - Bedrock is labeled Optional Advanced / High Risk when budget is $0.
+   - API Gateway cleanup only appears if API Gateway was actually selected.
+   - Lambda Function URL plans include Lambda Function URL cleanup.
+   - Beginner setup recommends AWS Console, CloudShell, or temporary credentials before long-term access keys.
+   - AWS Budgets setup is console-first.
+
+5. Confirm CLI formatting:
+   - All AWS CLI flags use double hyphens, like --function-name and --region.
+   - No malformed strings appear:
+     - s3: /
+     - arn:aws:iam :
+     - fileb: /
+     - https: /
+     - -function-name
+     - -region
+     - -bucket
+     - -role-name
+   - S3 paths always use s3://BUCKET_NAME.
+   - IAM ARNs contain no spaces.
+   - Multi-line commands keep correct backslashes.
+
+6. Confirm README export:
+   - Downloaded README.md matches the app’s visible plan.
+   - README does not contain malformed links like https: /.
+   - README does not list Bedrock as required in $0 mode.
+   - README includes cleanup commands.
+   - README includes portfolio-ready project description.
+
+7. If any issue is found:
+   - Fix only the minimal affected file.
+   - Add or update a regression test for that issue.
+   - Re-run npm test and npm run build.
+
+8. At the end, give me:
+   - tests run
+   - build status
+   - files changed
+   - any issues found
+   - whether Cloud Lab Guardian v0.1.0 is ready to push to GitHub

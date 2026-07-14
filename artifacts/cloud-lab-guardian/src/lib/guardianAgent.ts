@@ -282,6 +282,15 @@ export function detectServices(idea: string): DetectedService[] {
     }
   }
 
+  // "function url" / "function url api" → user explicitly wants Lambda Function URL, not API Gateway
+  if (lower.includes("function url")) {
+    detected.delete("API Gateway");
+    // Ensure Lambda is present (it's the host for Function URLs)
+    if (!detected.has("Lambda")) {
+      detected.set("Lambda", { ...SERVICE_RULES[0].service });
+    }
+  }
+
   // Default: assume a basic serverless project if nothing detected
   if (detected.size === 0) {
     detected.set("Lambda", { ...SERVICE_RULES[0].service });
