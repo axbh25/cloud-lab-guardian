@@ -8,6 +8,8 @@ frontend:
     build:
       commands:
         - BASE_PATH=/ corepack pnpm --filter @workspace/cloud-lab-guardian build
+        - ls -la artifacts/cloud-lab-guardian/dist
+        - test -f artifacts/cloud-lab-guardian/dist/index.html
   artifacts:
     baseDirectory: artifacts/cloud-lab-guardian/dist
     files:
